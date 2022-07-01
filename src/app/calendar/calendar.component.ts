@@ -1,4 +1,6 @@
+import { AppointmentService } from './../service/appointment.service';
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-calendar',
@@ -14,12 +16,20 @@ export class CalendarComponent implements OnInit {
   days: string[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
   daysNumbers?: any[][];
   OnlyWorkDay: boolean = false;
+  appointSubscription!: Subscription;
+  appointments!: any[];
 
-  constructor() { 
+  constructor(private appointmentService:AppointmentService) { 
 
   }
 
   ngOnInit() {
+    this.appointSubscription = this.appointmentService.appointmentSubject.subscribe(
+      (appointments: any[]) => {
+        this.appointments = appointments
+      }
+    )
+    this.appointmentService.emitAppointmentSubject();
     this.daysNumbers = this.setCalendar(this.currentDate);
   }
 
@@ -56,32 +66,56 @@ export class CalendarComponent implements OnInit {
     let daysNumber = this.range(1, lastDay+1, 1);
     let dayToAddBefore = this.adjustCalendar(new Date(date.getFullYear(), date.getMonth(), 1),"Before");
     let dayToAddAfter = this.adjustCalendar(new Date(date.getFullYear(), date.getMonth(), lastDay), "After");
-    let daysNumberDict = this.dayToColor(daysNumber,date,"black")
+    let daysNumberDict = this.dayToColor(daysNumber,date,"black","")
     if (dayToAddBefore) {
-      let dayToAddBeforeDict = this.dayToColor(dayToAddBefore,date,"#94a3b8")
+      let dayToAddBeforeDict = this.dayToColor(dayToAddBefore,date,"#94a3b8","Before")
           daysNumberDict = [...dayToAddBeforeDict,...daysNumberDict];
     }
     if (dayToAddAfter) {
-      let dayToAddAfterDict = this.dayToColor(dayToAddAfter,date,"#94a3b8")
+      let dayToAddAfterDict = this.dayToColor(dayToAddAfter,date,"#94a3b8","After")
       daysNumberDict = [...daysNumberDict,...dayToAddAfterDict]
     }
 
-    let daysNumbers = this.transformTo7(daysNumberDict)
-    console.log(daysNumbers);
+
+    for (let index in daysNumberDict) {
+      for (let index2 in this.appointments) {
+        if (daysNumberDict[index].day == this.appointments[index2].date.getDate() && daysNumberDict[index].month == this.appointments[index2].date.getMonth()) {
+          daysNumberDict[index].appointments.push(this.appointments[index2])
+        }
+      }
+    }
+
+    
+    let daysNumbers = this.transformTo7(daysNumberDict);
+    console.log(daysNumbers)
+
+
     return daysNumbers;
   }
 
 
   //add color to each cell
-  dayToColor(array: any[], date: Date, color: string) {
+  dayToColor(array: any[], date: Date, color: String, type: string) {
+
     let month = date.getMonth();
     let year = date.getFullYear();
+
+    //month and year correction
+    if (type === "Before") {
+      year = month === 0 ? year-1 : year;
+      month = month === 0 ? 11 : month-1;
+    }
+    if (type === "After") {
+      year = month === 11 ?  year + 1 :  year
+      month =  month === 11 ?   0 :  month+1
+    }
     return array.map(d => ({
       day: d,
       month: month,
       year:year,
       color: this.currentDate.getDate() === d && this.currentDate.getMonth() == month ? "#6A0DAD" : color,
-      weight: this.currentDate.getDate() === d && this.currentDate.getMonth() == month ? "bold" : 'normal'
+      weight: this.currentDate.getDate() === d && this.currentDate.getMonth() == month ? "bold" : 'normal',
+      appointments:  Array()
     }))
   }
 

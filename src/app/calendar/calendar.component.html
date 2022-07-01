@@ -1,11 +1,23 @@
-<h2>{{ dateToShow.getMonth() + 1 }}/{{ dateToShow.getFullYear() }}</h2>
-{{ currentDate.getDate() }}
-{{ dateToShow.getDate() }}
+<h2 class="text-3xl">
+  <strong
+    >{{ dateToShow.getMonth() + 1 }}/{{ dateToShow.getFullYear() }}</strong
+  >
+</h2>
 
-<button (click)="getPreviousMonth()">Previous</button>
-<button (click)="getNextMonth()">Next</button>
+<button
+  (click)="getPreviousMonth()"
+  class="border border-sky-500 text-sky-500 hover:text-sky-700 text-white font-bold py-2 px-4 rounded"
+>
+  Previous
+</button>
+<button
+  (click)="getNextMonth()"
+  class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded"
+>
+  Next
+</button>
 <button (click)="initCalendar()">Current Date</button>
-<table class="table-auto">
+<table class="table-auto w-screen">
   <thead
     class="p-2 border border-gray-300 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs"
   >
@@ -16,14 +28,23 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let day of daysNumbers" class="text-center h-20">
+    <tr *ngFor="let data of daysNumbers" class="text-center h-20">
       <td
-        *ngFor="let d of day"
+        *ngFor="let d of data"
         class="border p-1 h-40 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300"
         [style.color]="d.color"
         [style.font-weight]="d.weight"
       >
         {{ d.day }}
+        <div class="flex flex-col">
+          <span
+            *ngFor="let app of d.appointments"
+            class="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex mb-2"
+            role="alert"
+          >
+            {{ app.info }}
+          </span>
+        </div>
       </td>
     </tr>
   </tbody>

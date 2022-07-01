@@ -1,3 +1,4 @@
+import { AppointmentService } from './service/appointment.service';
 import { AuthService } from './service/auth.service';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -29,7 +30,7 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes),
     BrowserAnimationsModule,
   ],
-  providers: [AuthService],
+  providers: [AuthService,AppointmentService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
