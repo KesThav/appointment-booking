@@ -1,14 +1,18 @@
 <h2>{{ dateToShow.getMonth() + 1 }}/{{ dateToShow.getFullYear() }}</h2>
+{{ currentDate.getDate() }}
+{{ dateToShow.getDate() }}
 
 <button (click)="getPreviousMonth()">Previous</button>
 <button (click)="getNextMonth()">Next</button>
 <button (click)="initCalendar()">Current Date</button>
 <table class="table-auto">
   <thead
-    class="p-2 border-r h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs"
+    class="p-2 border border-gray-300 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs"
   >
     <tr>
-      <td *ngFor="let day of days">{{ day }}</td>
+      <td *ngFor="let day of days; let i = index" class="text-center">
+        {{ day }}
+      </td>
     </tr>
   </thead>
   <tbody>
@@ -16,8 +20,10 @@
       <td
         *ngFor="let d of day"
         class="border p-1 h-40 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300"
+        [style.color]="d.color"
+        [style.font-weight]="d.weight"
       >
-        {{ d }}
+        {{ d.day }}
       </td>
     </tr>
   </tbody>

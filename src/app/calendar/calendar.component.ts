@@ -9,8 +9,8 @@ export class CalendarComponent implements OnInit {
 
 
   currentDay: number = 0;
-  currentDate: any = new Date();
-  dateToShow = this.currentDate
+  currentDate: Date = new Date();
+  dateToShow:Date  = this.currentDate
   days: string[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
   daysNumbers?: any[][];
   OnlyWorkDay: boolean = false;
@@ -56,18 +56,34 @@ export class CalendarComponent implements OnInit {
     let daysNumber = this.range(1, lastDay+1, 1);
     let dayToAddBefore = this.adjustCalendar(new Date(date.getFullYear(), date.getMonth(), 1),"Before");
     let dayToAddAfter = this.adjustCalendar(new Date(date.getFullYear(), date.getMonth(), lastDay), "After");
+    let daysNumberDict = this.dayToColor(daysNumber,date,"black")
     if (dayToAddBefore) {
-          daysNumber = [...dayToAddBefore, ...daysNumber];
+      let dayToAddBeforeDict = this.dayToColor(dayToAddBefore,date,"#94a3b8")
+          daysNumberDict = [...dayToAddBeforeDict,...daysNumberDict];
     }
     if (dayToAddAfter) {
-      daysNumber = [...daysNumber,...dayToAddAfter]
+      let dayToAddAfterDict = this.dayToColor(dayToAddAfter,date,"#94a3b8")
+      daysNumberDict = [...daysNumberDict,...dayToAddAfterDict]
     }
-    let daysNumbers = this.transformTo7(daysNumber)
 
+    let daysNumbers = this.transformTo7(daysNumberDict)
+    console.log(daysNumbers);
     return daysNumbers;
   }
 
 
+  //add color to each cell
+  dayToColor(array: any[], date: Date, color: string) {
+    let month = date.getMonth();
+    let year = date.getFullYear();
+    return array.map(d => ({
+      day: d,
+      month: month,
+      year:year,
+      color: this.currentDate.getDate() === d && this.currentDate.getMonth() == month ? "#6A0DAD" : color,
+      weight: this.currentDate.getDate() === d && this.currentDate.getMonth() == month ? "bold" : 'normal'
+    }))
+  }
 
   //range like in python
   range = (start:number, stop:number, step:number) => {
