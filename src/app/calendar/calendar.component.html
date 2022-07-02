@@ -1,51 +1,67 @@
-<h2 class="text-3xl">
-  <strong
-    >{{ dateToShow.getMonth() + 1 }}/{{ dateToShow.getFullYear() }}</strong
-  >
-</h2>
+<div class="bg-white p-10">
+  <h2 class="text-3xl">
+    <strong
+      >{{ dateToShow.getMonth() + 1 }}/{{ dateToShow.getFullYear() }}</strong
+    >
+  </h2>
 
-<button
-  (click)="getPreviousMonth()"
-  class="border border-sky-500 text-sky-500 hover:text-sky-700 text-white font-bold py-2 px-4 rounded"
->
-  Previous
-</button>
-<button
-  (click)="getNextMonth()"
-  class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded"
->
-  Next
-</button>
-<button (click)="initCalendar()">Current Date</button>
-<table class="table-auto w-screen">
-  <thead
-    class="p-2 border border-gray-300 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs"
+  <button
+    (click)="getPreviousMonth()"
+    class="border border-sky-500 text-sky-500 hover:text-sky-700 text-white font-bold py-2 px-4 rounded"
   >
-    <tr>
-      <td *ngFor="let day of days; let i = index" class="text-center">
-        {{ day }}
-      </td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let data of daysNumbers" class="text-center h-20">
-      <td
-        *ngFor="let d of data"
-        class="border p-1 h-40 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300"
-        [style.color]="d.color"
-        [style.font-weight]="d.weight"
-      >
-        {{ d.day }}
-        <div class="flex flex-col">
-          <span
-            *ngFor="let app of d.appointments"
-            class="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex mb-2"
-            role="alert"
-          >
-            {{ app.info }}
-          </span>
-        </div>
-      </td>
-    </tr>
-  </tbody>
-</table>
+    Previous
+  </button>
+  <button
+    (click)="getNextMonth()"
+    class="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded"
+  >
+    Next
+  </button>
+  <button (click)="initCalendar()">Current Date</button>
+  <table class="table-auto w-full">
+    <thead
+      class="p-2 border border-gray-300 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs"
+    >
+      <tr>
+        <td
+          *ngFor="let day of days; let i = index"
+          class="text-center bg-slate-100 rounded"
+        >
+          {{ day }}
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of daysNumbers">
+        <td
+          *ngFor="let d of data"
+          class="border p-1 h-40 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300"
+          [style.color]="d.color"
+        >
+          <div class="h-full">
+            <div class="text-right">
+              <strong>{{ d.day }}</strong>
+            </div>
+
+            <span
+              *ngFor="let app of d.appointments"
+              class="p-2 items-center text-indigo-100 leading-none flex lg:inline-flex mb-2 w-full flex flex-row"
+              role="alert"
+              [style.color]="app.color"
+              [style.background-color]="app.background"
+              [ngStyle]="{ 'border-left': '4px solid' + app.color }"
+              [style.border]="
+                app.status === 'Waiting' && '1px dashed' + app.color
+              "
+            >
+              <span
+                >{{ app.time }} :<br />
+                {{ app.info }}</span
+              >
+            </span>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

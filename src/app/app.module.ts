@@ -9,6 +9,7 @@ import { BoardComponent } from './board/board.component';
 import { Routes,RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarComponent } from './calendar/calendar.component';
+import { CalendarWeekComponent } from './calendar-week/calendar-week.component';
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent },
@@ -21,7 +22,8 @@ const appRoutes: Routes = [
     AppComponent,
     SignupComponent,
     BoardComponent,
-    CalendarComponent
+    CalendarComponent,
+    CalendarWeekComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,22 @@
+<p>calendar-week works!</p>
+<button (click)="getPreviousWeek()">previous</button>
+<button (click)="getNextWeek()">next</button>
+<table class="table-auto w-full">
+  <thead
+    class="p-2 border border-gray-300 h-10 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 xl:text-sm text-xs"
+  >
+    <tr>
+      <td *ngFor="let day of days" class="text-center">{{ day }}</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td
+        *ngFor="let day of dayNumber"
+        class="text-center border p-1 h-40 xl:w-40 lg:w-30 md:w-30 sm:w-20 w-10 overflow-auto transition cursor-pointer duration-500 ease hover:bg-gray-300"
+      >
+        {{ day | date: "dd/MM/YY" }}
+      </td>
+    </tr>
+  </tbody>
+</table>

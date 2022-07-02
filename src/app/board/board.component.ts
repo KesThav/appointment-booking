@@ -11,4 +11,5 @@ import {
 })
 export class BoardComponent{
  
+  view: number = 0;
 }

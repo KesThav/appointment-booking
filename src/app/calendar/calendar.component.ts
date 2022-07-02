@@ -1,5 +1,5 @@
 import { AppointmentService } from './../service/appointment.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css']
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnInit,OnDestroy {
 
 
   currentDay: number = 0;
@@ -22,6 +22,9 @@ export class CalendarComponent implements OnInit {
   constructor(private appointmentService:AppointmentService) { 
 
   }
+  ngOnDestroy(): void {
+    this.appointSubscription.unsubscribe();
+  }
 
   ngOnInit() {
     this.appointSubscription = this.appointmentService.appointmentSubject.subscribe(
@@ -32,6 +35,7 @@ export class CalendarComponent implements OnInit {
     this.appointmentService.emitAppointmentSubject();
     this.daysNumbers = this.setCalendar(this.currentDate);
   }
+
 
   //back to current date
   initCalendar() {
@@ -79,7 +83,8 @@ export class CalendarComponent implements OnInit {
 
     for (let index in daysNumberDict) {
       for (let index2 in this.appointments) {
-        if (daysNumberDict[index].day == this.appointments[index2].date.getDate() && daysNumberDict[index].month == this.appointments[index2].date.getMonth()) {
+        if (daysNumberDict[index].day == this.appointments[index2].date.getDate() && daysNumberDict[index].month == this.appointments[index2].date.getMonth() &&
+        daysNumberDict[index].year === this.appointments[index2].date.getFullYear()) {
           daysNumberDict[index].appointments.push(this.appointments[index2])
         }
       }
@@ -114,7 +119,6 @@ export class CalendarComponent implements OnInit {
       month: month,
       year:year,
       color: this.currentDate.getDate() === d && this.currentDate.getMonth() == month ? "#6A0DAD" : color,
-      weight: this.currentDate.getDate() === d && this.currentDate.getMonth() == month ? "bold" : 'normal',
       appointments:  Array()
     }))
   }

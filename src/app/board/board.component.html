@@ -1,1 +1,4 @@
-<app-calendar></app-calendar>
+<div class="p-30 h-screen w-screen bg-slate-100 p-10">
+  <app-calendar *ngIf="view === 0"></app-calendar>
+  <app-calendar-week *ngIf="view === 0"></app-calendar-week>
+</div>
