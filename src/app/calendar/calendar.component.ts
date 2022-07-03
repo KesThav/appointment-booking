@@ -1,3 +1,4 @@
+import { TimeSlotService } from './../service/timeslot.service';
 import { AppointmentService } from './../service/appointment.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
@@ -17,23 +18,38 @@ export class CalendarComponent implements OnInit,OnDestroy {
   daysNumbers?: any[][];
   OnlyWorkDay: boolean = false;
   appointSubscription!: Subscription;
+  timeSlotsSubscription!: Subscription;
   appointments!: any[];
+  timeSlots!: any[];
 
-  constructor(private appointmentService:AppointmentService) { 
+  constructor(private appointmentService:AppointmentService,private timeSlotService:TimeSlotService) { 
 
   }
   ngOnDestroy(): void {
     this.appointSubscription.unsubscribe();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+
     this.appointSubscription = this.appointmentService.appointmentSubject.subscribe(
       (appointments: any[]) => {
         this.appointments = appointments
       }
     )
     this.appointmentService.emitAppointmentSubject();
+
+    
+    this.timeSlotService.getTimeSlots();
+/*     this.timeSlotsSubscription = this.timeSlotService.TimeSlotSuject.Receive().subscribe((timeSlot: any[]) => {
+      this.timeSlots = timeSlot;
+    })
+    this.timeSlotService.emitTimeSlotSubject();
+     */
+    this.timeSlots = await this.timeSlotService.getTimeSlots();
+    console.log(this.timeSlots.length)
     this.daysNumbers = this.setCalendar(this.currentDate);
+
+    console.log(this.daysNumbers)
   }
 
 
@@ -83,16 +99,22 @@ export class CalendarComponent implements OnInit,OnDestroy {
 
     for (let index in daysNumberDict) {
       for (let index2 in this.appointments) {
-        if (daysNumberDict[index].day == this.appointments[index2].date.getDate() && daysNumberDict[index].month == this.appointments[index2].date.getMonth() &&
+        if (daysNumberDict[index].day === this.appointments[index2].date.getDate() && daysNumberDict[index].month === this.appointments[index2].date.getMonth() &&
         daysNumberDict[index].year === this.appointments[index2].date.getFullYear()) {
           daysNumberDict[index].appointments.push(this.appointments[index2])
         }
       }
+      for (let index3 in this.timeSlots) {
+        if (daysNumberDict[index].day === this.timeSlots[index3].date.getDate() && daysNumberDict[index].month === this.timeSlots[index3].date.getMonth() &&
+          daysNumberDict[index].year === this.timeSlots[index3].date.getFullYear()) {
+          daysNumberDict[index].timeSlots.push(this.timeSlots[index3])
+        }
+      }
     }
+
 
     
     let daysNumbers = this.transformTo7(daysNumberDict);
-    console.log(daysNumbers)
 
 
     return daysNumbers;
@@ -119,7 +141,8 @@ export class CalendarComponent implements OnInit,OnDestroy {
       month: month,
       year:year,
       color: this.currentDate.getDate() === d && this.currentDate.getMonth() == month ? "#6A0DAD" : color,
-      appointments:  Array()
+      appointments: Array(),
+      timeSlots: Array()
     }))
   }
 

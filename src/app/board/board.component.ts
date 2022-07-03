@@ -1,7 +1,9 @@
+
 import {
   Component,
 
 } from '@angular/core';
+import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 
 
 @Component({
@@ -12,4 +14,5 @@ import {
 export class BoardComponent{
  
   view: number = 0;
+  
 }

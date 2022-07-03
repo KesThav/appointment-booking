@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "appointment-management-feaf2": {
+      "hosting": {
+        "temp": [
+          "appointment-management-feaf2"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "appointment-management-feaf2"
+  }
+}

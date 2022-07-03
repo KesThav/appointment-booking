@@ -94,6 +94,16 @@
             ],
             "scripts": []
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "temp:build:production",
+            "firebaseProject": "appointment-management-feaf2",
+            "firebaseHostingSite": "appointment-management-feaf2"
+          }
         }
       }
     }

@@ -1,4 +1,9 @@
-<div class="p-30 h-screen w-screen bg-slate-100 p-10">
-  <app-calendar *ngIf="view === 0"></app-calendar>
-  <app-calendar-week *ngIf="view === 0"></app-calendar-week>
+<div class="h-screen w-screen bg-slate-100 flex">
+  <div class="w-64">
+    <app-sidebar></app-sidebar>
+  </div>
+  <div class="p-10 w-full">
+    <app-appointment></app-appointment>
+    <app-calendar *ngIf="view === 0"></app-calendar>
+  </div>
 </div>

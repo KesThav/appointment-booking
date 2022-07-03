@@ -1,4 +1,5 @@
 <div class="bg-white p-10">
+  <app-create-time-slots></app-create-time-slots>
   <h2 class="text-3xl">
     <strong
       >{{ dateToShow.getMonth() + 1 }}/{{ dateToShow.getFullYear() }}</strong
@@ -59,6 +60,23 @@
                 {{ app.info }}</span
               >
             </span>
+
+            <span
+            *ngFor="let app of d.timeSlots"
+            class="p-2 items-center text-indigo-100 leading-none flex lg:inline-flex mb-2 w-full flex flex-row"
+            role="alert"
+            [style.color]="app.color"
+            [style.background-color]="app.background"
+            [ngStyle]="{ 'border-left': '4px solid' + app.color }"
+            [style.border]="
+              app.status === 'Waiting' && '1px dashed' + app.color
+            "
+          >
+            <span
+              >{{ app.time }} :<br />
+              {{ app.info }}</span
+            >
+          </span>
           </div>
         </td>
       </tr>

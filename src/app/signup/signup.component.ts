@@ -15,7 +15,6 @@ export class SignupComponent implements OnInit {
   constructor(private authService: AuthService,private formBuilder:FormBuilder) { }
 
   ngOnInit(): void {
-    this.authService.firebaseConnexion();
     this.initForm();
   }
 
@@ -23,14 +22,17 @@ export class SignupComponent implements OnInit {
     this.signupForm = this.formBuilder.group({
       email: ['', [Validators.required,Validators.email]],
       password: ['', [Validators.required,Validators.minLength(8)]],
-      confirmPassword:['',[Validators.required,Validators.minLength(8)]]
+      confirmPassword: ['', [Validators.required, Validators.minLength(8)]],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      role: ['',Validators.required]
     })
   }
 
   createUser() {
     const value = this.signupForm.value;
     this.loading = true;
-    this.authService.signin(value['email'], value['password']);
+    this.authService.signin(value['email'], value['password'],value['firstName'],value['lastName'],value['role']);
     this.loading = false;
   }
 
