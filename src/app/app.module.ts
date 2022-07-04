@@ -18,7 +18,8 @@ import { CreateTimeSlotsComponent } from './create-time-slots/create-time-slots.
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
-import { provideFirestore,getFirestore } from '@angular/fire/firestore';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import {MatIconModule} from '@angular/material/icon'
 
 const appRoutes: Routes = [
   { path: '', component: AppComponent },
@@ -46,7 +47,8 @@ const appRoutes: Routes = [
     HttpClientModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
+    MatIconModule
   ],
   providers: [AuthService,AppointmentService,TimeSlotService],
   bootstrap: [AppComponent]

@@ -5,7 +5,8 @@ import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { Router } from "@angular/router";
 import { HttpClient } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
-import { Firestore, collectionData, collection } from '@angular/fire/firestore';
+import { Firestore, collectionData, collection, addDoc } from '@angular/fire/firestore';
+import jwt_decode from 'jwt-decode';
 
 
 @Injectable()
@@ -28,12 +29,12 @@ export class AuthService {
   app: any = null;
 
 
-  createUser(email: string, firstName: string, lastName: string, role: string) {
-    this.userid = uuidv4();
-    this.httpClient.post(this.firestore.app.options.databaseURL + "/users.json", {uuid: this.userid,email: email, firstName: firstName, lastName: lastName, role: role
-    }).subscribe(res => {
-      console.log("User created");
-    })
+  async createUser(email: string, firstName: string, lastName: string, role: string,tokenid:'string') {
+    let decode_token:any = jwt_decode(tokenid);
+    this.userid = decode_token.user_id;
+    const docRef = await addDoc(collection(this.firestore, "users"), { uuid: this.userid, email: email, firstName: firstName, lastName: lastName, role: role })
+      .then(() => console.log("user created !"))
+
   }
 
   getUsers() {
@@ -48,7 +49,7 @@ export class AuthService {
     createUserWithEmailAndPassword(auth, email, password).then(async res => {
       this.tokenid = await res.user.getIdToken();
       localStorage.setItem('tokenid',this.tokenid)
-    }).then(() => this.createUser(email, firstName,lastName,role))
+    }).then(() => this.createUser(email, firstName,lastName,role,this.tokenid))
       .then( () =>      this.router.navigate(['board']))
   }
 

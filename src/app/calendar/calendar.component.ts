@@ -21,8 +21,11 @@ export class CalendarComponent implements OnInit,OnDestroy {
   timeSlotsSubscription!: Subscription;
   appointments!: any[];
   timeSlots!: any[];
+  timeslotsClicked: any[] = [];
+  title: string = '';
+  open:boolean = false;
 
-  constructor(private appointmentService:AppointmentService,private timeSlotService:TimeSlotService) { 
+  constructor(private timeSlotService:TimeSlotService) { 
 
   }
   ngOnDestroy(): void {
@@ -31,12 +34,6 @@ export class CalendarComponent implements OnInit,OnDestroy {
 
   async ngOnInit() {
 
-    this.appointSubscription = this.appointmentService.appointmentSubject.subscribe(
-      (appointments: any[]) => {
-        this.appointments = appointments
-      }
-    )
-    this.appointmentService.emitAppointmentSubject();
 
     
     this.timeSlotService.getTimeSlots();
@@ -98,12 +95,6 @@ export class CalendarComponent implements OnInit,OnDestroy {
 
 
     for (let index in daysNumberDict) {
-      for (let index2 in this.appointments) {
-        if (daysNumberDict[index].day === this.appointments[index2].date.getDate() && daysNumberDict[index].month === this.appointments[index2].date.getMonth() &&
-        daysNumberDict[index].year === this.appointments[index2].date.getFullYear()) {
-          daysNumberDict[index].appointments.push(this.appointments[index2])
-        }
-      }
       for (let index3 in this.timeSlots) {
         if (daysNumberDict[index].day === this.timeSlots[index3].date.getDate() && daysNumberDict[index].month === this.timeSlots[index3].date.getMonth() &&
           daysNumberDict[index].year === this.timeSlots[index3].date.getFullYear()) {
@@ -141,7 +132,6 @@ export class CalendarComponent implements OnInit,OnDestroy {
       month: month,
       year:year,
       color: this.currentDate.getDate() === d && this.currentDate.getMonth() == month ? "#6A0DAD" : color,
-      appointments: Array(),
       timeSlots: Array()
     }))
   }
@@ -211,5 +201,21 @@ export class CalendarComponent implements OnInit,OnDestroy {
       temp.push(array.slice(7*i,7*i+7))
     }
     return temp;
+  }
+
+  bookTimeSlot() {
+    console.log(this.title, this.timeslotsClicked[0]);
+    this.timeSlotService.bookTimeSlot(this.timeslotsClicked[0],this.title);
+  }
+
+  setOpen(app: any) {
+    this.timeslotsClicked.push(app);
+    console.log (this.timeslotsClicked)
+    this.open = true;
+  }
+
+  setClose() {
+    this.open = false;
+    this.timeslotsClicked.pop();
   }
 }
