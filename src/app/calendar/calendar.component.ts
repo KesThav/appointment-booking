@@ -1,3 +1,4 @@
+import jwt_decode from 'jwt-decode';
 import { TimeSlotService } from './../service/timeslot.service';
 import { AppointmentService } from './../service/appointment.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
@@ -24,6 +25,7 @@ export class CalendarComponent implements OnInit,OnDestroy {
   timeslotsClicked: any[] = [];
   title: string = '';
   open:boolean = false;
+  userid!: string;
 
   constructor(private timeSlotService:TimeSlotService) { 
 
@@ -33,20 +35,18 @@ export class CalendarComponent implements OnInit,OnDestroy {
   }
 
   async ngOnInit() {
-
-
-    
-    this.timeSlotService.getTimeSlots();
-/*     this.timeSlotsSubscription = this.timeSlotService.TimeSlotSuject.Receive().subscribe((timeSlot: any[]) => {
-      this.timeSlots = timeSlot;
+    let tokenid = localStorage.getItem('tokenid')
+    if (tokenid) {
+      let decoded_token:any = jwt_decode(tokenid);
+      this.userid = decoded_token.user_id;
+    }
+    console.log(this.userid)
+    this.timeSlotsSubscription = this.timeSlotService.TimeSlotSuject.subscribe(async (timeSlot: any[]) => {
+      this.timeSlots = await this.timeSlotService.getTimeSlots();
+      this.daysNumbers = this.setCalendar(this.currentDate);
     })
     this.timeSlotService.emitTimeSlotSubject();
-     */
-    this.timeSlots = await this.timeSlotService.getTimeSlots();
-    console.log(this.timeSlots.length)
-    this.daysNumbers = this.setCalendar(this.currentDate);
 
-    console.log(this.daysNumbers)
   }
 
 
@@ -106,7 +106,7 @@ export class CalendarComponent implements OnInit,OnDestroy {
 
     
     let daysNumbers = this.transformTo7(daysNumberDict);
-
+    console.log(daysNumbers);
 
     return daysNumbers;
   }

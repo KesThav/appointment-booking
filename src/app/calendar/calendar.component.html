@@ -54,12 +54,15 @@
               [style.border]="
                 app.info === 'Pending' && '1px dashed' + app.color
               "
-              (click)="setOpen(app)"
             >
               <span
                 >{{ app.time }} :<br />
                 {{ app.info }} </span
-              ><span><mat-icon>account_box</mat-icon></span>
+              ><span (click)="setOpen(app)"
+                ><mat-icon *ngIf="app.userid !== userid"
+                  >account_box</mat-icon
+                ></span
+              >
             </span>
           </div>
         </td>
