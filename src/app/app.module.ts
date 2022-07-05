@@ -1,3 +1,4 @@
+import { AuthGuard } from './service/authguard.service';
 import {TimeSlotService } from './service/timeslot.service';
 import { AppointmentService } from './service/appointment.service';
 import { AuthService } from './service/auth.service';
@@ -22,9 +23,9 @@ import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import {MatIconModule} from '@angular/material/icon'
 
 const appRoutes: Routes = [
-  { path: '', component: AppComponent },
+  { path: '',  component: AppComponent },
   { path: 'signup', component: SignupComponent },
-  {path: "board", component:BoardComponent}
+  {path: "board",canActivate:[AuthGuard], component:BoardComponent}
 ]
 
 @NgModule({
@@ -50,7 +51,7 @@ const appRoutes: Routes = [
     provideFirestore(() => getFirestore()),
     MatIconModule
   ],
-  providers: [AuthService,AppointmentService,TimeSlotService],
+  providers: [AuthService,AppointmentService,TimeSlotService,AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
