@@ -13,19 +13,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CalendarComponent } from './calendar/calendar.component';
 import { CalendarWeekComponent } from './calendar-week/calendar-week.component';
 import {HttpClientModule} from '@angular/common/http';
-import { AppointmentComponent } from './appointment/appointment.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { CreateTimeSlotsComponent } from './create-time-slots/create-time-slots.component';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
-import {MatIconModule} from '@angular/material/icon'
+import {MatIconModule} from '@angular/material/icon';
+import { AppointementComponent } from './appointment/appointment.component'
 
 const appRoutes: Routes = [
   { path: '',  component: AppComponent },
   { path: 'signup', component: SignupComponent },
-  {path: "board",canActivate:[AuthGuard], component:BoardComponent}
+  { path: "board", canActivate: [AuthGuard], component: BoardComponent },
+  {path: "appointments",canActivate:[AuthGuard], component:AppointementComponent}
 ]
 
 @NgModule({
@@ -35,9 +36,9 @@ const appRoutes: Routes = [
     BoardComponent,
     CalendarComponent,
     CalendarWeekComponent,
-    AppointmentComponent,
     SidebarComponent,
     CreateTimeSlotsComponent,
+    AppointementComponent,
   ],
   imports: [
     BrowserModule,

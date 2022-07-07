@@ -14,5 +14,9 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 export class BoardComponent{
  
   view: number = 0;
+
+  setView(id: number) {
+    this.view = id;
+  }
   
 }
