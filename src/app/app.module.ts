@@ -1,3 +1,4 @@
+import { SidebarService } from './service/sidebar.service';
 import { AuthGuard } from './service/authguard.service';
 import {TimeSlotService } from './service/timeslot.service';
 import { AppointmentService } from './service/appointment.service';
@@ -20,13 +21,18 @@ import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import {MatIconModule} from '@angular/material/icon';
-import { AppointementComponent } from './appointment/appointment.component'
+import { AppointementComponent } from './appointment/appointment.component';
+import { ProfileComponent } from './profile/profile.component';
+import { LoginComponent } from './login/login.component';
+
 
 const appRoutes: Routes = [
-  { path: '',  component: AppComponent },
-  { path: 'signup', component: SignupComponent },
-  { path: "board", canActivate: [AuthGuard], component: BoardComponent },
-  {path: "appointments",canActivate:[AuthGuard], component:AppointementComponent}
+  { path: '', component: AppComponent, pathMatch: 'full', data: {sidebar : false} },
+  { path: 'signup', component: SignupComponent, data: { sidebar: false } },
+  { path: 'login', component: LoginComponent, data: {sidebar : false}  },
+  { path: "calendar", canActivate: [AuthGuard], component: CalendarComponent , data: {sidebar : true} },
+  { path: "appointments", canActivate: [AuthGuard], component: AppointementComponent , data: {sidebar : true} },
+  { path: "profile", canActivate:[AuthGuard], component:ProfileComponent, data: {sidebar : true} }
 ]
 
 @NgModule({
@@ -39,6 +45,8 @@ const appRoutes: Routes = [
     SidebarComponent,
     CreateTimeSlotsComponent,
     AppointementComponent,
+    ProfileComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,7 +60,7 @@ const appRoutes: Routes = [
     provideFirestore(() => getFirestore()),
     MatIconModule
   ],
-  providers: [AuthService,AppointmentService,TimeSlotService,AuthGuard],
+  providers: [AuthService,AppointmentService,TimeSlotService,AuthGuard,SidebarService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

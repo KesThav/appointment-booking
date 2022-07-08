@@ -117,6 +117,7 @@
         >Forgot Password?</a
       >
       <button
+        [disabled]="signupForm.invalid"
         type="submit"
         class="w-full py-2 rounded-full text-gray-100 focus:outline-none"
         [ngClass]="
@@ -131,7 +132,7 @@
   </form>
   <caption>
     You already have an account ?
-    <a routerLink="/signin" class="hover:text-sky-700"
+    <a routerLink="/login" class="hover:text-sky-700"
       >click here to login in.</a
     >
   </caption>

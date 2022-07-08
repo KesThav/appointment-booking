@@ -9,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppointementComponent implements OnInit {
 
-  active: number = 1;
+  active: number = 0;
   timeSlotsSubscription!: Subscription;
   timeSlots!: any[];
 
@@ -17,7 +17,7 @@ export class AppointementComponent implements OnInit {
 
   ngOnInit(): void {
     this.timeSlotsSubscription = this.timeSlotService.TimeSlotSuject.subscribe(async (timeSlot: any[]) => {
-      this.timeSlots = await this.timeSlotService.getTimeSlots('');
+      this.timeSlots = await this.timeSlotService.getTimeSlots('Pending');
     })
     this.timeSlotService.emitTimeSlotSubject();
   }

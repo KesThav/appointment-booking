@@ -1,9 +1,9 @@
 
+
 import {
-  Component,
+  Component, OnInit,
 
 } from '@angular/core';
-import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 
 
 @Component({
@@ -11,12 +11,10 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.css']
 })
-export class BoardComponent{
- 
-  view: number = 0;
+export class BoardComponent {
 
-  setView(id: number) {
-    this.view = id;
-  }
+
+
+
   
 }

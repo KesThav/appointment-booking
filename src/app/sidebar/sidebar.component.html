@@ -1,9 +1,9 @@
-<div class="w-64 h-full" aria-label="Sidebar">
+<div class="w-64 h-full" aria-label="Sidebar" *ngIf="visible">
   <div class="overflow-y-auto py-4 px-3 bg-white rounded dark:bg-white-800">
     <ul class="space-y-2">
       <li>
         <a
-          href="#"
+          routerLink="/calendar"
           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           <svg
@@ -20,7 +20,7 @@
       </li>
       <li>
         <a
-          (click)="setView(1)"
+          routerLink="/appointments"
           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           <svg
@@ -38,7 +38,7 @@
       </li>
       <li>
         <a
-          href="#"
+          routerLink="/profile"
           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           <svg
@@ -58,7 +58,8 @@
       </li>
       <li>
         <a
-          href="#"
+          (click)="signOut()"
+          href="/"
           class="flex items-center p-2 text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
         >
           <svg

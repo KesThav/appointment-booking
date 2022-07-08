@@ -1,7 +1,7 @@
 import { last, Subject } from "rxjs";
 import { Injectable } from "@angular/core";
 import * as auth from 'firebase/auth'
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { Router } from "@angular/router";
 import { HttpClient } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
@@ -57,8 +57,35 @@ export class AuthService {
       localStorage.setItem('tokenid', this.tokenid)
       this.isAuth();
     }).then(() => this.createUser(email, firstName,lastName,role))
-      .then( () =>      this.router.navigate(['board']))
+      .then(() => this.router.navigate(['calendar']))
+    .catch(err => console.log(err))
   }
 
+  login(email: string, password: string) {
+    console.log(email)
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password).then(async res => {
+      this.tokenid = await res.user.getIdToken();
+      localStorage.setItem('tokenid', this.tokenid)
+      this.isAuth();
+    }).then(() => this.router.navigate(['calendar']))
+    .catch(err => console.log(err))
+  }
+
+  signOut() {
+    this.router.navigate(['/']);
+    localStorage.removeItem('tokenid');
+  }
+
+
+  setShow() {
+    if (this.router.url.includes('signup') || this.router.url === '') {
+      console.log(this.router.url.includes(''))
+      return false
+    } else {
+      return true
+    }
+  }
+  
 }
 
