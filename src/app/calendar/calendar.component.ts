@@ -3,7 +3,9 @@ import jwt_decode from 'jwt-decode';
 import { TimeSlotService } from './../service/timeslot.service';
 import { AppointmentService } from './../service/appointment.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import {map, startWith} from 'rxjs/operators';
 
 @Component({
   selector: 'app-calendar',
@@ -27,6 +29,12 @@ export class CalendarComponent implements OnInit,OnDestroy {
   title: string = '';
   open:boolean = false;
   userid!: string;
+  users!: any[];
+  userSubscription!: Subscription;
+  current_user = this.authService.user_data.user_id;
+  selected_enterprise: any;
+
+
 
   constructor(private timeSlotService:TimeSlotService,private authService:AuthService) { 
 
@@ -38,13 +46,28 @@ export class CalendarComponent implements OnInit,OnDestroy {
   }
 
   async ngOnInit() {
-    this.timeSlotsSubscription = this.timeSlotService.TimeSlotSuject.subscribe(async (timeSlot: any[]) => {
-      this.timeSlots = await this.timeSlotService.getTimeSlots('');
-      this.daysNumbers = this.setCalendar(this.currentDate);
-    })
-    this.timeSlotService.emitTimeSlotSubject();
-
+    if (this.authService.isAuth()) {
+      this.timeSlotsSubscription = this.timeSlotService.TimeSlotSuject.subscribe(async (timeSlot: any[]) => {
+        this.timeSlots = await this.timeSlotService.getTimeSlots('')
+        this.daysNumbers = this.setCalendar(this.currentDate);
+      })
+      this.timeSlotService.emitTimeSlotSubject();
+      this.userSubscription = this.authService.userSubject.subscribe(async (users: any[]) => {
+        this.users = await this.authService.getUsers('Enterprise');
+      })
+      this.authService.emitUsers();
+  
+    }
   }
+
+  async updateTimeSlot(event: Event) {
+    let enterprise = (event.target as HTMLTextAreaElement).value
+    this.timeSlotService.filter_userid.push(enterprise);
+    this.timeSlots = await this.timeSlotService.getTimeSlots('')
+    this.daysNumbers = this.setCalendar(this.currentDate);
+  }
+
+  
 
 
   //back to current date

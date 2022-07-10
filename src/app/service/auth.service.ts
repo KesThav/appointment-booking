@@ -5,8 +5,9 @@ import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } f
 import { Router } from "@angular/router";
 import { HttpClient } from '@angular/common/http';
 import { v4 as uuidv4 } from 'uuid';
-import { Firestore, collectionData, collection, addDoc } from '@angular/fire/firestore';
 import jwt_decode from 'jwt-decode';
+import { collection, addDoc, Firestore, getDocs,where,query } from '@angular/fire/firestore';
+import { doc, updateDoc, increment } from "firebase/firestore";
 
 
 @Injectable()
@@ -15,6 +16,8 @@ export class AuthService {
   constructor(private router:Router,private httpClient:HttpClient,private firestore:Firestore){}
 
   user_data: any;
+
+  current_user!: any;
   
   tokenid: any;
 
@@ -29,7 +32,13 @@ export class AuthService {
     }
   }
 
-  users!: any[];
+  userSubject = new Subject<any[]>();
+
+  users: any[] = [];
+
+  emitUsers() {
+    this.userSubject.next(this.users);
+  }
 
 
   async createUser(email: string, firstName: string, lastName: string, role: string) {
@@ -43,11 +52,34 @@ export class AuthService {
     }
   }
 
-  getUsers() {
-    this.httpClient.get(this.firestore.app.options.databaseURL + "/users.json").subscribe(res => {
-      this.users.push(res);
-      console.log(res);
+  arrayUniqueByKey(array: any[],key:any) {
+    return  [...new Map(array.map(item =>
+       [item[key], item])).values()];
+   }
+
+  async getUsers(role?:string) {
+    const ref = await getDocs(collection(this.firestore, 'users'));
+    ref.forEach(doc => {
+      this.users.push({
+        id: doc.id, email: doc.data()['email'], firstName: doc.data()['firstName'],
+        lastName: doc.data()['lastName'], role: doc.data()['role'], uuid: doc.data()['uuid']
+      })
     })
+
+    if (role) {
+      return this.arrayUniqueByKey(this.users, "id").filter(data => data.role == role)
+    } else {
+      return this.arrayUniqueByKey(this.users, "id")
+    }
+  }
+
+  async getCurrentUser() {
+    const q = query(collection(this.firestore, 'users'), where("uuid", "==", this.user_data.user_id));
+    const ref = await getDocs(q)
+    ref.forEach(doc => {
+      this.current_user = { email: doc.data()['email'], firstName : doc.data()['firstName'], lastName:doc.data()['lastName'], role: doc.data()['role'], uuid: doc.data()['uuid'] }
+    })
+    return this.current_user
   }
 
   signin(email: string, password: string,firstName:string, lastName:string, role: string) {
@@ -68,6 +100,7 @@ export class AuthService {
       this.tokenid = await res.user.getIdToken();
       localStorage.setItem('tokenid', this.tokenid)
       this.isAuth();
+      this.getCurrentUser();
     }).then(() => this.router.navigate(['calendar']))
     .catch(err => console.log(err))
   }

@@ -14,6 +14,7 @@ export class TimeSlotService{
   TimeSlotSuject = new Subject<any[]>();
 
   app!: any;
+  filter_userid: string[] = [];
 
   emitTimeSlotSubject() {
     this.TimeSlotSuject.next(this.timeSlots);
@@ -83,18 +84,39 @@ export class TimeSlotService{
       [item[key], item])).values()];
   }
 
-  async getTimeSlots(filter_type:string) {
+  async getTimeSlots(filter_type: string) {
+    if (this.authService.isAuth()) {
+    this.filter_userid.push(this.authService.user_data.user_id)
     const ref = await getDocs(collection(this.firestore, 'timeslots'))
     ref.forEach(doc => {
       this.timeSlots.push({
         id: doc.id, date: new Date(doc.data()['date']['seconds'] * 1000), time: doc.data()['time'], info: doc.data()['info'],
-        color: '#2CAA4C', background : '#E9F7EC',userid: doc.data()['userid']})
+        color: '#2CAA4C', background : '#E9F7EC',userid: doc.data()['userid'],title:doc.data()['title'],customer:doc.data()['customer']})
     })
-    if (filter_type != '') {
-      return this.arrayUniqueByKey(this.timeSlots, "id").filter(d => d.info === filter_type);
+      
+    //get users data and merge with timeslots
+      let users_data = await this.authService.getUsers();
+      if (users_data) {
+        for (let i = 0; i < this.timeSlots.length; i++){
+          for (let j = 0; j < users_data.length; j++){
+            if (this.timeSlots[i].customer == users_data[j].uuid) {
+              this.timeSlots[i].customer = users_data[j];
+            }
+          }
+        }
+      }
+
+      if (filter_type != '') {
+        return this.arrayUniqueByKey(this.timeSlots, "id").filter(d => d.info === filter_type)
+          .filter(data => this.filter_userid.includes(data.customer) || this.filter_userid.includes(data.userid));
+      } else {
+        return this.arrayUniqueByKey(this.timeSlots, "id")
+          .filter(data => this.filter_userid.includes(data.customer) || this.filter_userid.includes(data.userid));
+      }
+
     } else {
-      return this.arrayUniqueByKey(this.timeSlots, "id");
-    }
+      return [];
+  }
 
   }
 

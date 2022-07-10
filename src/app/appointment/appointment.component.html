@@ -74,12 +74,14 @@
                 </div>
                 <div>
                   <p class="font-semibold text-black">{{ time.title }}</p>
-                  <p class="text-xs text-gray-600">{{ time.customer }}</p>
+                  <p class="text-xs text-gray-600">
+                    {{ time.customer.firstName }} {{ time.customer.lastName }}
+                  </p>
                 </div>
               </div>
             </td>
             <td class="px-4 py-3 text-ms font-semibold border">
-              {{ time.time }}
+              {{ time.date | date }} - {{ time.time }}
             </td>
             <td class="px-4 py-3 text-xs border">
               <span
@@ -95,7 +97,12 @@
                 {{ time.info }}
               </span>
             </td>
-            <td class="px-4 py-3 text-sm border">6/4/2000</td>
+            <td class="px-4 py-3 text-sm border">
+              <span *ngIf="getRole() == 'Enterprise'"
+                ><mat-icon>done_all</mat-icon></span
+              >
+              <mat-icon>close</mat-icon>
+            </td>
           </tr>
         </tbody>
       </table>
