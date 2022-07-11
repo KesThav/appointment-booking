@@ -2,7 +2,7 @@ import { AuthService } from './auth.service';
 import { HttpClient } from '@angular/common/http';
 import { filter, of, Subject } from 'rxjs';
 import { Injectable } from "@angular/core";
-import { collection, addDoc, Firestore, getDocs } from '@angular/fire/firestore';
+import { collection, addDoc, Firestore, getDocs, deleteDoc } from '@angular/fire/firestore';
 import { doc, updateDoc, increment } from "firebase/firestore";
 import jwt_decode from 'jwt-decode';
 
@@ -86,12 +86,13 @@ export class TimeSlotService{
 
   async getTimeSlots(filter_type: string) {
     if (this.authService.isAuth()) {
-    this.filter_userid.push(this.authService.user_data.user_id)
+      if (!this.filter_userid.includes(this.authService.user_data.user_id)) this.filter_userid.push(this.authService.user_data.user_id)
+      console.log(this.filter_userid)
     const ref = await getDocs(collection(this.firestore, 'timeslots'))
     ref.forEach(doc => {
       this.timeSlots.push({
         id: doc.id, date: new Date(doc.data()['date']['seconds'] * 1000), time: doc.data()['time'], info: doc.data()['info'],
-        color: '#2CAA4C', background : '#E9F7EC',userid: doc.data()['userid'],title:doc.data()['title'],customer:doc.data()['customer']})
+        color: '#0369a1', background : '#e0f2fe',userid: doc.data()['userid'],title:doc.data()['title'],customer:doc.data()['customer']})
     })
       
     //get users data and merge with timeslots
@@ -104,14 +105,23 @@ export class TimeSlotService{
             }
           }
         }
+        for (let i = 0; i < this.timeSlots.length; i++){
+          for (let j = 0; j < users_data.length; j++){
+            if (this.timeSlots[i].userid == users_data[j].uuid) {
+              this.timeSlots[i].userid = users_data[j];
+            }
+          }
+        }
       }
+
+      console.log(this.timeSlots)
 
       if (filter_type != '') {
         return this.arrayUniqueByKey(this.timeSlots, "id").filter(d => d.info === filter_type)
-          .filter(data => this.filter_userid.includes(data.customer) || this.filter_userid.includes(data.userid));
+          .filter(data => this.filter_userid.includes(data.customer.uuid) || this.filter_userid.includes(data.userid.uuid));
       } else {
         return this.arrayUniqueByKey(this.timeSlots, "id")
-          .filter(data => this.filter_userid.includes(data.customer) || this.filter_userid.includes(data.userid));
+          .filter(data => this.filter_userid.includes(data.customer.uuid) || this.filter_userid.includes(data.userid.uuid));
       }
 
     } else {
@@ -135,8 +145,46 @@ export class TimeSlotService{
     }
   }
 
-  async updateTimeSlot() {
-    
+  async validateTimeSlot(id: string) {
+    if (this.authService.isAuth()) {
+      const timeSlotRef = doc(this.firestore, 'timeslots', id)
+      await updateDoc(timeSlotRef, {
+        info:"Approved"
+      }).then(() => {
+        this.emitTimeSlotSubject();
+      }).catch(err => console.log(err))
+    } else {
+      console.log("not logged");
+    }
+  }
+
+  async deleteTimeSlot(id: string) {
+    if (this.authService.isAuth()) {
+      const ref = doc(this.firestore,'timeslots',id)
+      await deleteDoc(ref).then(() => this.emitTimeSlotSubject()).catch(err => console.log(err))
+    }
+  }
+
+  async cancelTimeSlot(id: string) {
+    if (this.authService.isAuth()) {
+      const timeSlotRef = doc(this.firestore, 'timeslots', id)
+      if (this.authService.current_user.role == 'Entreprise') {
+        await updateDoc(timeSlotRef, {
+          info:"Cancelled"
+        }).then(() => {
+          this.emitTimeSlotSubject();
+        }).catch(err => console.log(err))
+      } else {
+        await updateDoc(timeSlotRef, {
+          info:"Available"
+        }).then(() => {
+          this.emitTimeSlotSubject();
+        }).catch(err => console.log(err))
+      }
+
+    } else {
+      console.log("not logged");
+    }
   }
 
   }

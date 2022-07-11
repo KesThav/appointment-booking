@@ -26,6 +26,9 @@ export class AuthService {
     if (tokenid) {
       //improve this
       this.user_data = jwt_decode(tokenid);
+      if (this.user_data) {
+        this.getCurrentUser();
+      }      
       return true
     } else {
       return false;
@@ -44,7 +47,6 @@ export class AuthService {
   async createUser(email: string, firstName: string, lastName: string, role: string) {
     if (this.isAuth()) {
       if (this.user_data) {
-        console.log(this.user_data)
               const docRef = await addDoc(collection(this.firestore, "users"), { uuid: this.user_data.user_id, email: email, firstName: firstName, lastName: lastName, role: role })
       .then(() => console.log("user created !"))
       }
@@ -79,7 +81,7 @@ export class AuthService {
     ref.forEach(doc => {
       this.current_user = { email: doc.data()['email'], firstName : doc.data()['firstName'], lastName:doc.data()['lastName'], role: doc.data()['role'], uuid: doc.data()['uuid'] }
     })
-    return this.current_user
+
   }
 
   signin(email: string, password: string,firstName:string, lastName:string, role: string) {

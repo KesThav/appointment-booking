@@ -20,6 +20,7 @@ export class AppointementComponent implements OnInit {
     this.timeSlotsSubscription = this.timeSlotService.TimeSlotSuject.subscribe(async (timeSlot: any[]) => {
       this.timeSlotService.filter_userid = [this.authService.user_data.user_id];
       this.timeSlots = await this.timeSlotService.getTimeSlots('Pending');
+      console.log(this.timeSlots)
     })
     this.timeSlotService.emitTimeSlotSubject();
   }
@@ -32,5 +33,18 @@ export class AppointementComponent implements OnInit {
   getRole() {
     return this.authService.current_user.role;
   }
+
+  validateTimeSlot(id: string) {
+    this.timeSlotService.validateTimeSlot(id);
+  }
+
+  deleteTimeSlot(id: string) {
+    this.timeSlotService.deleteTimeSlot(id);
+  }
+
+  cancelTimeSlot(id: string) {
+    this.timeSlotService.cancelTimeSlot(id);
+  }
+
 
 }

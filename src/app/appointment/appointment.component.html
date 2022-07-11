@@ -14,7 +14,7 @@
         >Pending</a
       >
     </li>
-    <li class="mr-2">
+    <li class="mr-2" *ngIf="authService.current_user.role == 'Enterprise'">
       <a
         (click)="setFilter(1, 'Available')"
         class="inline-block p-4"
@@ -29,14 +29,26 @@
     </li>
     <li class="mr-2">
       <a
-        (click)="setFilter(2, 'Closed')"
+        (click)="setFilter(2, 'Approved')"
         class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
         [ngClass]="
           active == 2
             ? 'text-blue-600 rounded-t-lg border-b-2 border-blue-600 active dark:text-blue-500 dark:border-blue-500'
             : ''
         "
-        >Closed</a
+        >Approved</a
+      >
+    </li>
+    <li class="mr-2">
+      <a
+        (click)="setFilter(3, 'Cancelled')"
+        class="inline-block p-4 rounded-t-lg border-b-2 border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300"
+        [ngClass]="
+          active == 3
+            ? 'text-blue-600 rounded-t-lg border-b-2 border-blue-600 active dark:text-blue-500 dark:border-blue-500'
+            : ''
+        "
+        >Cancelled</a
       >
     </li>
   </ul>
@@ -50,7 +62,11 @@
           <tr
             class="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600"
           >
-            <th class="px-4 py-3">Title and customer</th>
+            <th class="px-4 py-3" *ngIf="active != 1">
+              {{
+                getRole() == "Enterprise" ? "Title and customer" : "Enterprise"
+              }}
+            </th>
             <th class="px-4 py-3">Time</th>
             <th class="px-4 py-3">Status</th>
             <th class="px-4 py-3">Actions</th>
@@ -58,7 +74,7 @@
         </thead>
         <tbody class="bg-white">
           <tr *ngFor="let time of timeSlots" class="text-gray-700">
-            <td class="px-4 py-3 border">
+            <td class="px-4 py-3 border" *ngIf="active != 1">
               <div class="flex items-center text-sm">
                 <div class="relative w-8 h-8 mr-3 rounded-full md:block">
                   <img
@@ -75,7 +91,11 @@
                 <div>
                   <p class="font-semibold text-black">{{ time.title }}</p>
                   <p class="text-xs text-gray-600">
-                    {{ time.customer.firstName }} {{ time.customer.lastName }}
+                    {{
+                      getRole() == "Enterprise"
+                        ? time.customer.firstName + " " + time.customer.lastName
+                        : time.userid.firstName
+                    }}
                   </p>
                 </div>
               </div>
@@ -98,10 +118,17 @@
               </span>
             </td>
             <td class="px-4 py-3 text-sm border">
-              <span *ngIf="getRole() == 'Enterprise'"
-                ><mat-icon>done_all</mat-icon></span
+              <span *ngIf="active == 0 && getRole() == 'Enterprise'"
+                ><mat-icon (click)="validateTimeSlot(time.id)"
+                  >done_all</mat-icon
+                ></span
               >
-              <mat-icon>close</mat-icon>
+              <mat-icon *ngIf="active != 2" (click)="deleteTimeSlot(time.id)"
+                >close</mat-icon
+              >
+              <mat-icon *ngIf="active == 2" (click)="cancelTimeSlot(time.id)"
+                >close</mat-icon
+              >
             </td>
           </tr>
         </tbody>

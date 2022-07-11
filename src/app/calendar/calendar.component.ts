@@ -5,7 +5,7 @@ import { AppointmentService } from './../service/appointment.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import {map, startWith} from 'rxjs/operators';
+import {filter, map, startWith} from 'rxjs/operators';
 
 @Component({
   selector: 'app-calendar',
@@ -36,7 +36,7 @@ export class CalendarComponent implements OnInit,OnDestroy {
 
 
 
-  constructor(private timeSlotService:TimeSlotService,private authService:AuthService) { 
+  constructor(private timeSlotService:TimeSlotService,public authService:AuthService) { 
 
   }
   ngOnDestroy(): void {
@@ -48,12 +48,15 @@ export class CalendarComponent implements OnInit,OnDestroy {
   async ngOnInit() {
     if (this.authService.isAuth()) {
       this.timeSlotsSubscription = this.timeSlotService.TimeSlotSuject.subscribe(async (timeSlot: any[]) => {
-        this.timeSlots = await this.timeSlotService.getTimeSlots('')
+        let temp = await this.timeSlotService.getTimeSlots('')
+        this.timeSlots = temp.filter(data => data.info != "Cancelled")
+        console.log(this.timeSlots)
         this.daysNumbers = this.setCalendar(this.currentDate);
       })
       this.timeSlotService.emitTimeSlotSubject();
       this.userSubscription = this.authService.userSubject.subscribe(async (users: any[]) => {
-        this.users = await this.authService.getUsers('Enterprise');
+        let temp = await this.authService.getUsers('Enterprise')
+        this.users = temp.filter(us => us.uuid != this.current_user);
       })
       this.authService.emitUsers();
   
@@ -63,7 +66,8 @@ export class CalendarComponent implements OnInit,OnDestroy {
   async updateTimeSlot(event: Event) {
     let enterprise = (event.target as HTMLTextAreaElement).value
     this.timeSlotService.filter_userid.push(enterprise);
-    this.timeSlots = await this.timeSlotService.getTimeSlots('')
+    let temp = await this.timeSlotService.getTimeSlots('')
+    this.timeSlots = temp.filter(data => data.info != "Cancelled")
     this.daysNumbers = this.setCalendar(this.currentDate);
   }
 

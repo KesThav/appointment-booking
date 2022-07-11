@@ -1,7 +1,9 @@
 <div class="bg-white p-10">
   <div class="flex">
     <div>
-      <app-create-time-slots></app-create-time-slots>
+      <app-create-time-slots
+        *ngIf="authService.current_user.role == 'Enterprise'"
+      ></app-create-time-slots>
       <h2 class="text-3xl">
         <strong
           >{{ dateToShow.getMonth() + 1 }}/{{
@@ -80,9 +82,12 @@
             >
               <span
                 >{{ app.time }} :<br />
-                {{ app.info }} </span
+                {{ app.info }} 
+                {{
+                  app.userid.uuid != current_user ? ' - ' + app.userid.firstName : ""
+                }}</span
               ><span (click)="setOpen(app)"
-                ><mat-icon *ngIf="app.userid !== current_user"
+                ><mat-icon *ngIf="app.userid.uuid !== current_user"
                   >account_box</mat-icon
                 ></span
               >
