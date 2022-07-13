@@ -1,27 +1,11 @@
-# Temp
+# Appointment management
+An appointment management system is a software used by companies and service providers to streamline their service appointments. By using the system, potential customers can know and choose their preferred appointment times according to the companies and service providers' available time slots. 
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.0.4.
-
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+This project has been developed using Angular as frontend and firebase as backend.
+### Images
+![image](https://user-images.githubusercontent.com/15364111/178796834-5b97b0f6-9152-405f-96c3-82c5d9066421.png)
+![image](https://user-images.githubusercontent.com/15364111/178796629-b2908487-1a6f-4ae8-b574-f7b1ec87d58f.png)
+![image](https://user-images.githubusercontent.com/15364111/178798788-e70b7c82-87fa-4f15-ab5b-55489e8b568f.png)
+![image](https://user-images.githubusercontent.com/15364111/178798836-74f5eecf-9576-43d0-8f19-a3c1c06d6bd6.png)
+![image](https://user-images.githubusercontent.com/15364111/178798897-c6e33a4e-04ca-4255-9696-65818cc48788.png)
+![image](https://user-images.githubusercontent.com/15364111/178798944-a867778c-c06c-4d00-849b-7d2fbea45841.png)
