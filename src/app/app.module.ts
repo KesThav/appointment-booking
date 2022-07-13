@@ -1,7 +1,6 @@
 import { SidebarService } from './service/sidebar.service';
 import { AuthGuard } from './service/authguard.service';
 import {TimeSlotService } from './service/timeslot.service';
-import { AppointmentService } from './service/appointment.service';
 import { AuthService } from './service/auth.service';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -134,7 +133,7 @@ const appRoutes: Routes = [
     MatSortModule,
     MatTableModule
   ],
-  providers: [AuthService,AppointmentService,TimeSlotService,AuthGuard,SidebarService],
+  providers: [AuthService,TimeSlotService,AuthGuard,SidebarService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

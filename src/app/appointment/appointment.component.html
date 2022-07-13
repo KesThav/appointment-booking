@@ -92,7 +92,7 @@
                   <p class="font-semibold text-black">{{ time.title }}</p>
                   <p class="text-xs text-gray-600">
                     {{
-                      getRole() == "Enterprise"
+                      time.userid.uuid == authService.user_data.user_id
                         ? time.customer.firstName + " " + time.customer.lastName
                         : time.userid.firstName
                     }}

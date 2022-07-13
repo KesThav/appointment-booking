@@ -24,9 +24,14 @@ export class SignupComponent implements OnInit {
       password: ['', [Validators.required,Validators.minLength(8)]],
       confirmPassword: ['', [Validators.required, Validators.minLength(8)]],
       firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      role: ['',Validators.required]
+      lastName: [' ', Validators.required],
+      role: ['User',Validators.required]
     })
+  }
+
+  isUser() {
+    const value = this.signupForm.value;
+    return value['role'] == 'User'
   }
 
   createUser() {

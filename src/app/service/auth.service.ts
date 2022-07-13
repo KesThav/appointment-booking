@@ -21,6 +21,8 @@ export class AuthService {
   
   tokenid: any;
 
+  error_message:boolean = false;
+
   isAuth = () => {
     let tokenid = localStorage.getItem('tokenid');
     if (tokenid) {
@@ -66,6 +68,7 @@ export class AuthService {
         id: doc.id, email: doc.data()['email'], firstName: doc.data()['firstName'],
         lastName: doc.data()['lastName'], role: doc.data()['role'], uuid: doc.data()['uuid']
       })
+      return this.users
     })
 
     if (role) {
@@ -104,7 +107,7 @@ export class AuthService {
       this.isAuth();
       this.getCurrentUser();
     }).then(() => this.router.navigate(['calendar']))
-    .catch(err => console.log(err))
+      .catch(err => this.error_message = true)
   }
 
   signOut() {

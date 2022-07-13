@@ -54,6 +54,10 @@ export class CreateTimeSlotsComponent implements OnInit {
     return form['recurrent'] == true
   }
 
+  getMessage() {
+    return this.timeSlotService.message;
+  }
+
 
 
 }

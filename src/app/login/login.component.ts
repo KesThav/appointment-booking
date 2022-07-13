@@ -31,4 +31,8 @@ export class LoginComponent implements OnInit {
     this.authService.login(value['email'], value['password']);
     this.loading = false;
   }
+
+  showErrorMessage() {
+    return this.authService.error_message
+  }
 }

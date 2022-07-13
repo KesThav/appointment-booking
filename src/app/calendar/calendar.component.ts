@@ -1,11 +1,10 @@
 import { AuthService } from './../service/auth.service';
 import jwt_decode from 'jwt-decode';
 import { TimeSlotService } from './../service/timeslot.service';
-import { AppointmentService } from './../service/appointment.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
-import {filter, map, startWith} from 'rxjs/operators';
+import { filter, map, startWith } from 'rxjs/operators';
 
 @Component({
   selector: 'app-calendar',
@@ -43,14 +42,18 @@ export class CalendarComponent implements OnInit,OnDestroy {
     if (this.timeSlotsSubscription) {
       this.timeSlotsSubscription.unsubscribe();
     }
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   async ngOnInit() {
     if (this.authService.isAuth()) {
+      this.authService.getCurrentUser();
       this.timeSlotsSubscription = this.timeSlotService.TimeSlotSuject.subscribe(async (timeSlot: any[]) => {
         let temp = await this.timeSlotService.getTimeSlots('')
         this.timeSlots = temp.filter(data => data.info != "Cancelled")
-        console.log(this.timeSlots)
+
         this.daysNumbers = this.setCalendar(this.currentDate);
       })
       this.timeSlotService.emitTimeSlotSubject();
@@ -65,7 +68,7 @@ export class CalendarComponent implements OnInit,OnDestroy {
 
   async updateTimeSlot(event: Event) {
     let enterprise = (event.target as HTMLTextAreaElement).value
-    this.timeSlotService.filter_userid.push(enterprise);
+    this.timeSlotService.filter_userid= [this.current_user,enterprise];
     let temp = await this.timeSlotService.getTimeSlots('')
     this.timeSlots = temp.filter(data => data.info != "Cancelled")
     this.daysNumbers = this.setCalendar(this.currentDate);
@@ -130,7 +133,7 @@ export class CalendarComponent implements OnInit,OnDestroy {
 
     
     let daysNumbers = this.transformTo7(daysNumberDict);
-    console.log(daysNumbers);
+
 
     return daysNumbers;
   }
@@ -228,13 +231,13 @@ export class CalendarComponent implements OnInit,OnDestroy {
   }
 
   bookTimeSlot() {
-    console.log(this.title, this.timeslotsClicked[0]);
+
     this.timeSlotService.bookTimeSlot(this.timeslotsClicked[0],this.title);
   }
 
   setOpen(app: any) {
-    this.timeslotsClicked.push(app);
-    console.log (this.timeslotsClicked)
+    console.log(app);
+    this.timeslotsClicked.push(app)
     this.open = true;
   }
 
@@ -242,4 +245,9 @@ export class CalendarComponent implements OnInit,OnDestroy {
     this.open = false;
     this.timeslotsClicked.pop();
   }
+
+  getMessage() {
+    return this.timeSlotService.message;
+  }
+
 }
